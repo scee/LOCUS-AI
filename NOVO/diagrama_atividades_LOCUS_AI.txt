@@ -1,0 +1,76 @@
+@startuml
+title LOCUS AI — Diagrama de Atividades
+
+|Administrador (E-Redes)|
+start
+:Consultar fontes de dados disponíveis;
+:Registar fontes e respetivos metadados;
+:Adquirir dados E-REDES_Data e Pordata;
+
+if (Aquisição concluída com sucesso?) then (Sim)
+  :Registar origem e resultado da aquisição;
+else (Não)
+  :Registar erro da aquisição;
+  :Notificar administrador;
+  stop
+endif
+
+:Tratar valores em falta e duplicados;
+:Corrigir inconsistências e uniformizar unidades;
+:Normalizar variáveis numéricas;
+
+|Sistema LOCUS AI|
+while (Dados adequados para análise?) is (Não)
+  |Administrador (E-Redes)|
+  :Identificar problemas nos dados;
+  :Corrigir dados ou ajustar a fonte;
+  :Reprocessar os dados;
+  |Sistema LOCUS AI|
+endwhile (Sim)
+
+:Disponibilizar dados preparados;
+
+|Utilizador (E-Redes)|
+partition "Fase 2: Delimitação da Consulta (US04-US05)" {
+  :Selecionar uma ou mais dimensão(ões) de análise:\n• Energética (Foco Principal)\n• Demográfica & Económica (Suporte)\n• Territorial / Geográfica (Estruturante)\n• Ambiental (Extensão Futura / Condicional);
+
+  :Definir unidade(s) territorial(is):\n• **Núcleo Piloto:** Município da Guarda (e freguesias, se disponíveis)\n• **Arredores (Limítrofes):** Pinhel, Almeida, Celorico da Beira,\n  Gouveia, Manteigas, Belmonte, Covilhã e Sabugal\n• **Escala Regional:** Distrito da Guarda (14 mun.) / NUTS III Beiras e Serra da Estrela (15 mun.);
+
+  :Indicadores elegíveis:\n• **Energéticos:** Consumo total (kWh/MWh), por tensão (BTN/BTE/MT) e per capita\n• **Demográficos:** População residente, densidade (hab./km²) e agregados\n• **Económicos:** Poder de compra per capita, empresas e emprego\n• **Territoriais:** Área (km²), alojamentos e limites administrativos\n• **Ambientais (Opcional):** Emissões de CO₂ e resíduos per capita;
+
+  :Definir intervalo temporal e submeter pedido;
+}
+
+|Sistema LOCUS AI|
+:Verificar disponibilidade e compatibilidade dos dados;
+
+if (Existem dados suficientes?) then (Sim)
+  fork
+    :Executar análise descritiva, correlações e tendências;
+  fork again
+    :Comparar territórios e/ou períodos;
+  fork again
+    if (Clustering viável e solicitado?) then (Sim)
+      :Agrupar territórios semelhantes;
+    endif
+  fork again
+    if (Previsão viável e solicitada?) then (Sim)
+      :Executar modelo preditivo validado;
+    endif
+  end fork
+
+  :Consolidar resultados e preparar mapas/gráficos;
+
+  |Utilizador (E-Redes)|
+  :Consultar resultados e respetivo contexto;
+
+else (Não)
+  :Identificar dados em falta ou incompatíveis;
+  :Preparar mensagem explícita de limitações;
+
+  |Utilizador (E-Redes)|
+  :Consultar mensagem de indisponibilidade;
+endif
+
+stop
+@enduml
