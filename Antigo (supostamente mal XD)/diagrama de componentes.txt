@@ -1,0 +1,159 @@
+@startuml
+title LOCUS AI - Diagrama de Componentes
+
+left to right direction
+skinparam componentStyle uml2
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+' Aumenta o espaçamento entre elementos e colunas para evitar sobreposição de texto
+skinparam nodesep 45
+skinparam ranksep 85
+
+' Linhas poligonais/curvas suaves evitam que várias setas partilhem exatamente o mesmo caminho
+skinparam linetype polyline
+
+skinparam package {
+    BackgroundColor #F5F7FA
+    BorderColor #52677D
+    FontColor #17365D
+}
+
+skinparam component {
+    BackgroundColor #E8F1FA
+    BorderColor #356A9A
+    FontColor #17365D
+}
+
+skinparam database {
+    BackgroundColor #E8F1FA
+    BorderColor #356A9A
+    FontColor #17365D
+}
+
+skinparam interface {
+    BackgroundColor #FFFFFF
+    BorderColor #26734D
+    FontColor #26734D
+}
+
+' =====================================================
+' 1. CLIENTE / APRESENTAÇÃO
+' =====================================================
+
+package "Cliente / Apresentação" as Cliente {
+    component "InterfaceWeb\n(Dashboard LOCUS AI)" as InterfaceWeb
+}
+
+' =====================================================
+' 2. LÓGICA DE NEGÓCIO E ANÁLISE
+' =====================================================
+
+package "Lógica de Negócio e Análise" as Negocio {
+    interface "IAplicacao" as IAplicacao
+    component "GestorAplicacao" as GestorAplicacao
+
+    interface "IAnalise" as IAnalise
+    component "MotorAnaliseTerritorial" as MotorAnalise
+
+    interface "IML" as IML
+    component "ModuloML" <<opcional>> as ModuloML
+
+    ' Ancorar interfaces diretamente à esquerda/topo dos respetivos componentes
+    IAplicacao -down- GestorAplicacao
+    IAnalise -right- MotorAnalise
+    IML -right- ModuloML
+}
+
+' =====================================================
+' 3. INTEGRAÇÃO E DADOS
+' =====================================================
+
+package "Integração e Dados" as Dados {
+    interface "IPipeline" as IPipeline
+    component "PipelineETL" as PipelineETL
+
+    interface "IMetadados" as IMetadados
+    component "GestorMetadados" as GestorMetadados
+
+    interface "IDados" as IDados
+    database "RepositorioAnalitico\nPostgreSQL + PostGIS" as Repositorio
+
+    ' Ancorar interfaces diretamente aos componentes de dados
+    IPipeline -right- PipelineETL
+    IMetadados -right- GestorMetadados
+    IDados -right- Repositorio
+}
+
+' =====================================================
+' 4. SISTEMAS EXTERNOS
+' =====================================================
+
+package "Sistemas Externos" as Externos {
+    component "E-REDES_Data" as EREDES <<external>>
+    component "Pordata" as Pordata <<external>>
+}
+
+' =====================================================
+' 5. DEPENDÊNCIAS ENTRE COMPONENTES
+' =====================================================
+
+' Interface e camada de aplicação
+InterfaceWeb ..> IAplicacao : utiliza
+
+' Gestor da aplicação coordena as funcionalidades
+GestorAplicacao ..> IAnalise : solicita análises
+GestorAplicacao ..> IPipeline : solicita operações\nde dados
+GestorAplicacao ..> IMetadados : consulta metadados
+GestorAplicacao ..> IML : solicita ML\n[se disponível]
+
+' Motor de análise
+MotorAnalise ..> IDados : consulta dados
+MotorAnalise ..> IML : utiliza resultados\n[condicional]
+
+' Pipeline e Catálogo
+PipelineETL ..> IDados : escreve dados\nbrutos e preparados
+PipelineETL ..> IMetadados : regista proveniência
+GestorMetadados ..> IDados : consulta / regista\nmetadados
+
+' Fontes externas
+PipelineETL ..> EREDES : adquire dados
+PipelineETL ..> Pordata : adquire indicadores
+
+' =====================================================
+' 6. NOTAS ARQUITETURAIS
+' =====================================================
+
+note bottom of ModuloML
+  <b>Módulo opcional.</b>
+  Disponibiliza:
+  - Clustering territorial
+  - Modelos preditivos
+  - Métricas de avaliação
+  - Explicabilidade
+
+  A sua indisponibilidade não impede
+  as consultas e análises estatísticas.
+end note
+
+note bottom of Repositorio
+  <b>Separação lógica dos dados:</b>
+  - Dados brutos
+  - Dados preparados
+  - Dados analíticos
+
+  Suporte geoespacial através
+  de PostgreSQL + PostGIS.
+end note
+
+note top of PipelineETL
+  <b>Responsável por:</b>
+  - Aquisição
+  - Limpeza
+  - Integração
+  - Harmonização geográfica
+  - Normalização
+  - Validação
+end note
+
+@enduml

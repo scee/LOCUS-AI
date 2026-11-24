@@ -1,0 +1,152 @@
+@startuml
+title LOCUS AI - Diagrama de Estados de um Dataset
+
+top to bottom direction
+skinparam shadowing false
+
+' Linhas poligonais suaves em vez de ângulos retos para evitar sobreposição de etiquetas
+skinparam linetype polyline
+
+' Espaçamento suficiente entre estados e níveis
+skinparam nodesep 50
+skinparam ranksep 60
+
+skinparam state {
+    BackgroundColor #EAF2F8
+    BorderColor #356A9A
+    FontColor #17365D
+    ArrowColor #52677D
+}
+
+' =====================================================
+' ESTADO INICIAL
+' =====================================================
+
+[*] --> Registado : registarFonte()\ncriarMetadados()
+
+' =====================================================
+' REGISTO E AQUISIÇÃO
+' =====================================================
+
+state "Registado" as Registado
+state "Em Aquisição" as EmAquisicao
+state "Falha na Aquisição" as FalhaAquisicao
+
+Registado --> EmAquisicao : iniciarIngestao()
+
+EmAquisicao --> EmProcessamentoETL : aquisicaoConcluida()\n[dadosRecebidos]
+
+EmAquisicao -left-> FalhaAquisicao : erroAquisicao()\n[erroAcesso ||\nformatoInvalido]
+
+FalhaAquisicao : / registarLog()
+FalhaAquisicao : / notificarAdministrador()
+
+FalhaAquisicao --> EmAquisicao : corrigirFonte()\n[configuracaoCorrigida]
+
+FalhaAquisicao --> [*] : descartarDataset()
+
+' =====================================================
+' PROCESSAMENTO ETL
+' =====================================================
+
+state "Em Processamento ETL" as EmProcessamentoETL
+state "Em Validação da Qualidade" as EmValidacaoQualidade
+
+EmProcessamentoETL : / limparDados()
+EmProcessamentoETL : / tratarNulosEDuplicados()
+EmProcessamentoETL : / harmonizarChavesMunicipais()
+EmProcessamentoETL : / normalizarDados()
+
+EmProcessamentoETL --> EmValidacaoQualidade : processamentoConcluido()
+
+' =====================================================
+' VALIDAÇÃO DA QUALIDADE
+' =====================================================
+
+state "Rejeitado por Inadequação" as Rejeitado
+
+EmValidacaoQualidade : / verificarGranularidade()
+EmValidacaoQualidade : / verificarCoberturaTemporal()
+EmValidacaoQualidade : / verificarConsistencia()
+EmValidacaoQualidade : / verificarCompletude()
+
+EmValidacaoQualidade --> AprovadoParaAnalise : dadosValidos()\n[coberturaOK &&\ngranularidadeOK &&\nconsistenciaOK]
+
+EmValidacaoQualidade -left-> Rejeitado : dadosInsuficientes()\n[!coberturaOK ||\n!granularidadeOK ||\n!consistenciaOK]
+
+Rejeitado : / registarMotivoRejeicao()
+Rejeitado : / notificarAdministrador()
+
+Rejeitado --> EmProcessamentoETL : ajustarDados()\n[correcaoPossivel]
+
+Rejeitado --> [*] : descartarDataset()\n[semPossibilidadeCorrecao]
+
+' =====================================================
+' ESTADO COMPOSTO: APROVADO PARA ANÁLISE
+' =====================================================
+
+state "Aprovado Para Análise" as AprovadoParaAnalise {
+
+    ' -------------------------------------------------
+    ' Região 1: Exploração e Estatística
+    ' -------------------------------------------------
+
+    state "Disponibilidade Analítica" as Disponibilidade {
+
+        [*] --> Disponivel
+
+        state "Disponível para\nExploração / Estatística" as Disponivel
+
+        Disponivel : Consultas por município
+        Disponivel : Análise estatística
+        Disponivel : Correlações
+        Disponivel : Tendências
+        Disponivel : Mapas e gráficos
+
+    }
+
+    --
+
+    ' -------------------------------------------------
+    ' Região 2: Elegibilidade para Machine Learning
+    ' -------------------------------------------------
+
+    state "Elegibilidade ML" as ElegibilidadeML {
+
+        [*] --> AvaliacaoML
+
+        state "A avaliar elegibilidade ML" as AvaliacaoML
+        state "Apto para Treino / Validação ML" as AptoML
+        state "Não Apto para ML" as NaoAptoML
+
+        AvaliacaoML -left-> AptoML : avaliarML()\n[historicoSuficiente &&\nqualidadeML_OK]
+
+        AvaliacaoML -right-> NaoAptoML : avaliarML()\n[!historicoSuficiente ||\n!qualidadeML_OK]
+
+        NaoAptoML --> AvaliacaoML : novosDadosDisponiveis()
+
+        AptoML : / disponibilizarDadosAoModuloML()
+        NaoAptoML : / registarLimitacoesML()
+
+    }
+
+}
+
+' =====================================================
+' ARQUIVO / ATUALIZAÇÃO
+' =====================================================
+
+state "Obsoleto / Arquivado" as Arquivado
+
+AprovadoParaAnalise --> Arquivado : novaVersaoPublicada()\n[datasetSubstituido]
+
+Arquivado : / preservarHistorico()
+Arquivado : / manterProveniencia()
+
+' =====================================================
+' ESTADO FINAL
+' =====================================================
+
+Arquivado --> [*] : concluirArquivo()
+
+@enduml

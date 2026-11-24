@@ -1,0 +1,95 @@
+
+@startuml
+title Locus AI - Diagrama de Atividades
+
+skinparam activity {
+  BackgroundColor #F5F5F5
+  BorderColor #888888
+  DiamondBackgroundColor white
+  DiamondBorderColor #888888
+}
+skinparam shadowing false
+
+|Utente E-Redes|
+start
+:Selecionar território;
+:Selecionar indicadores (Consumo energético, Densidade populacional, Taxa de desemprego);
+:Selecionar período temporal;
+:Selecionar entre 1 e 5 áreas de análise;
+
+if (Selecionou área energética?) then (Sim)
+  :Analisar consumo e produção de energia;
+  :Comparar indicadores energéticos;
+  :Identificar padrões de consumo;
+else (Não)
+endif
+
+if (Selecionou área demográfica?) then (Sim)
+  :Analisar população e densidade populacional;
+  :Comparar indicadores demográficos;
+  :Identificar tendências populacionais;
+else (Não)
+endif
+
+if (Selecionou área económica?) then (Sim)
+  :Analisar emprego e atividade económica;
+  :Comparar indicadores económicos;
+  :Identificar diferenças entre territórios;
+else (Não)
+endif
+
+if (Selecionou área ambiental?) then (Sim)
+  :Analisar indicadores ambientais;
+  :Avaliar emissões, resíduos e qualidade ambiental;
+  :Identificar padrões e alterações ambientais;
+else (Não)
+endif
+
+if (Selecionou área territorial?) then (Sim)
+  :Analisar distribuição e características do território;
+  :Comparar indicadores territoriais;
+  :Identificar padrões de distribuição espacial;
+else (Não)
+endif
+
+|Administrador|
+:Adquirir dados;
+
+if (Aquisição concluída?) then (Sim)
+  :Registar origem e metadados;
+else (Não)
+  :Registar erro de aquisição;
+  :Notificar administrador;
+  stop
+endif
+
+:Integrar dados numa estrutura comum;
+
+:Tratar valores em falta e registos duplicados;
+:Corrigir inconsistências e valores inválidos;
+:Uniformizar unidades e formatos;
+:Normalizar variáveis numéricas,quando aplicável;
+
+while (Dados adequados para análise?) is (Não)
+  :Identificar problemas e limitações;
+  :Analisar problemas dos dados;
+  :Corrigir dados ou ajustar a fonte;
+  :Reprocessar dados;
+endwhile (Sim)
+
+:Disponibilizar dados preparados;
+:Reunir resultados das análises selecionadas;
+:Preparar resultados da análise;
+:Associar resultados ao território e período selecionados;
+
+if (Existem resultados disponíveis?) then (Sim)
+  :Gerar mapas e/ou gráficos;
+  |Utente E-Redes|
+  :Apresentar resultados;
+  stop
+else (Não)
+  |Administrador|
+  :Informar que não existem dados suficientes;
+  stop
+endif
+@enduml

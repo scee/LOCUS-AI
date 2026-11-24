@@ -1,0 +1,73 @@
+
+@startuml
+title LOCUS AI - Análise Preditiva e Recomendações
+
+actor "Utilizador E-REDES" as Utilizador
+boundary "Interface LOCUS AI" as Interface
+control "Serviço de Análise" as Servico
+database "Dataset Analítico" as Dados
+control "Módulo de Análise Preditiva" as Modelo
+control "Módulo de Recomendações" as Recomendacoes
+
+Utilizador -> Interface : Selecionar indicadores,\nterritório e período
+activate Interface
+
+Interface -> Servico : Iniciar análise
+activate Servico
+
+Servico -> Dados : Consultar dados selecionados
+activate Dados
+Dados --> Servico : Devolver dados disponíveis
+deactivate Dados
+
+Servico --> Interface : Criar tabelas e gráficos
+
+Interface --> Utilizador : Apresentar tabelas e gráficos
+
+Utilizador -> Interface : Solicitar análise preditiva
+
+alt Dados suficientes e adequados
+
+    Servico -> Modelo : Preparar e analisar dados
+    activate Modelo
+    Modelo -> Modelo : Gerar previsões
+    Modelo --> Servico : Devolver previsões e métricas
+    deactivate Modelo
+
+    Servico --> Interface : Apresentar resultados preditivos
+    Interface --> Utilizador : Mostrar previsões e indicadores
+
+    opt Utilizador solicita recomendações
+
+        Utilizador -> Interface : Pedir recomendações
+        Interface -> Servico : Solicitar avaliação de alternativas
+
+        Servico -> Recomendacoes : Avaliar alternativas
+        activate Recomendacoes
+
+        Recomendacoes -> Dados : Consultar indicadores relevantes
+        activate Dados
+        Dados --> Recomendacoes : Devolver dados de apoio
+        deactivate Dados
+
+        Recomendacoes -> Recomendacoes : Comparar alternativas e objetivos
+        Recomendacoes --> Servico : Devolver recomendações fundamentadas
+        deactivate Recomendacoes
+
+        Servico --> Interface : Enviar recomendações e justificações
+        Interface -> Interface : Criar uma estratégia as com recomendações e justificações
+        Interface --> Utilizador : Apresentar estratégia sugerida
+
+    end
+
+else Dados insuficientes ou inadequados
+
+    Servico --> Interface : Informar limitações dos dados
+    Interface --> Utilizador : Apresentar mensagem explicativa
+
+end
+
+deactivate Servico
+deactivate Interface
+
+@enduml
