@@ -1,0 +1,151 @@
+
+/* =========================================
+   LOCUS AI — DESIGN SYSTEM
+   ========================================= */
+
+/* 1. Design Tokens */
+:root {
+    /* Brand */
+    --locus-cyan: #00B8D9;
+    --locus-cyan-dark: #0095B3;
+    --locus-cyan-light: #E5F9FC;
+
+    --locus-brown: #B87948;
+    --locus-purple: #7955D9;
+
+    /* Backgrounds */
+    --locus-bg: #F4F7F9;
+    --locus-surface: #FFFFFF;
+    --locus-surface-alt: #EDF2F5;
+
+    /* Text */
+    --locus-dark: #101820;
+    --locus-text: #263746;
+    --locus-muted: #718096;
+    --locus-white: #FFFFFF;
+
+    /* Borders */
+    --locus-border: #E2E8F0;
+
+    /* Status */
+    --locus-success: #16A36A;
+    --locus-warning: #E5A000;
+    --locus-danger: #DC4C4C;
+
+    /* Typography */
+    --font-primary: "Inter", sans-serif;
+
+    /* Spacing */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+
+    /* Radius */
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(16, 24, 32, 0.05);
+    --shadow-md: 0 4px 12px rgba(16, 24, 32, 0.06);
+    --shadow-lg: 0 8px 24px rgba(16, 24, 32, 0.08);
+}
+
+/* 2. Global Styles */
+html, body, [data-testid="stAppViewContainer"] {
+    font-family: var(--font-primary);
+    color: var(--locus-dark);
+}
+
+[data-testid="stAppViewContainer"] {
+    background: var(--locus-bg);
+}
+
+[data-testid="stHeader"] {
+    background: transparent;
+}
+
+/* 3. Typography */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--locus-dark);
+    font-weight: 650;
+    letter-spacing: -0.025em;
+}
+
+/* 4. Sidebar */
+[data-testid="stSidebar"] {
+    background: var(--locus-surface);
+    border-right: 1px solid var(--locus-border);
+}
+
+/* 5. Main Content */
+.block-container {
+    padding-top: 2.5rem;
+    padding-bottom: 3rem;
+    max-width: 1440px;
+}
+
+/* 6. Cards */
+.st-key-main_header {
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    //border: 1px solid var(--locus-border);
+    //border-left: 4px solid var(--locus-cyan);
+    //background: var(--locus-surface);
+    box-shadow: var(--shadow-sm);
+}
+
+/* 7. Buttons */
+.stButton > button {
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+/* 8. Inputs */
+.stTextInput input,
+.stNumberInput input,
+.stSelectbox div[data-baseweb="select"] {
+    border-radius: var(--radius-md);
+}
+
+/* 9. Dividers */
+hr {
+    border-color: var(--locus-border);
+}
+
+/* 10. Responsive */
+@media (max-width: 768px) {
+    .block-container {
+        padding: 1.25rem 1rem 2rem;
+    }
+}
+
+/* Hide active navigation indicator */
+[data-testid="stSidebarNav"] [aria-current="page"]::before {
+    display: none;
+}
+
+/* Data & Platform Status — Alerts */
+
+/* Full alert container */
+[data-testid="stAlertContainer"] {
+    background-color: var(--locus-surface-alt) !important;
+    border: 1px solid var(--locus-border) !important;
+    border-radius: var(--radius-md) !important;
+}
+
+/* Remove inner background */
+[data-testid="stAlertContentWarning"],
+[data-testid="stAlertContentInfo"] {
+    background: transparent !important;
+}
+
+/* Text */
+[data-testid="stAlert"] p {
+    color: var(--locus-text) !important;
+}
