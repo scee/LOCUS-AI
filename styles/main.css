@@ -133,4 +133,33 @@ hr {
 /* Text */
 [data-testid=stAlert] p {
   color: var(--locus-text) !important;
+}
+
+/* --------------------------------------------------
+   SIDEBAR TOGGLE — ChatGPT-inspired icon
+-------------------------------------------------- */
+[data-testid=stSidebarCollapseButton] button {
+  color: var(--locus-text) !important;
+}
+
+/* Hide original Streamlit icon */
+[data-testid=stSidebarCollapseButton] button svg {
+  display: none !important;
+}
+
+/* Custom sidebar icon */
+[data-testid=stSidebarCollapseButton] button::after {
+  content: "";
+  display: block;
+  width: 22px;
+  height: 22px;
+  background-color: var(--locus-text);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='4' width='18' height='16' rx='2' fill='none' stroke='black' stroke-width='1.7'/%3E%3Cpath d='M9 4v16' stroke='black' stroke-width='1.7'/%3E%3Cpath d='m15 9-3 3 3 3' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='4' width='18' height='16' rx='2' fill='none' stroke='black' stroke-width='1.7'/%3E%3Cpath d='M9 4v16' stroke='black' stroke-width='1.7'/%3E%3Cpath d='m15 9-3 3 3 3' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  -webkit-mask-size: contain;
+          mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+          mask-position: center;
 }/*# sourceMappingURL=main.css.map */

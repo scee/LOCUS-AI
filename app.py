@@ -202,15 +202,28 @@ pages = {
         st.Page("pages/dashboard.py", title="Dashboard", icon=":material/dashboard:", default=True),
     ],
     "Explore": [
-        st.Page(territorial_explorer, title="Territorial Explorer", icon=":material/map:"),
-        st.Page(comparisons, title="Comparisons", icon=":material/compare_arrows:"),
+        st.Page("pages/territorial_intelligence.py", title="Territorial Intelligence", icon=":material/analytics:"),
+        st.Page("pages/territorial_explorer.py", title="Territorial Explorer", icon=":material/map:"),
+        st.Page("pages/comparisons.py", title="Comparisons", icon=":material/compare_arrows:"),
     ],
     "Analytics": [
-        st.Page(statistical_analysis, title="Statistical Analysis", icon=":material/analytics:"),
-        st.Page(clustering, title="Clustering", icon=":material/hub:"),
-        st.Page(predictions, title="Predictions", icon=":material/insights:"),
+        
+        st.Page("pages/statistical_analysis.py", title="Statistical Analysis", icon=":material/analytics:"),
+        st.Page("pages/clustering.py", title="Clustering", icon=":material/hub:"),
+        st.Page("pages/predictions.py", title="Predictions", icon=":material/insights:"),
     ],
 }
 
+pg = st.navigation(
+    pages,
+    position="sidebar",
+    expanded=True
+)
+
+
+
+
 pg = st.navigation(pages)
 pg.run()
+
+
